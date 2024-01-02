@@ -1,0 +1,13 @@
+{
+  "name": "genuary2024",
+  "version": "1.0.0",
+  "description": "Contributions to the #genuary2024 challenge",
+  "main": "index.js",
+  "repository": "https://github.com/conceptblend/genuary2024.git",
+  "author": "conceptblend <the.concept.blend@gmail.com>",
+  "license": "UNLICENSED",
+  "private": false,
+  "scripts": {
+    "new": "./new-sketch.sh"
+  }
+}
