@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "target": "ES2015",
+    "types": [
+      "p5"
+    ],
+    "noEmit": true
+  }
+}
