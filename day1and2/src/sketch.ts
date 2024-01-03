@@ -72,26 +72,33 @@ export const sketch = (p: p5) => {
     // DO YOUR DRAWING HERE!
     const gridSize = 54,
       cellSize = PARAMS.width / gridSize,
-      noiseIncrement = 0.025;
+      noiseIncrement = 0.015;
     const cxy = PARAMS.width * 0.5 - ((PARAMS.width * 0.5) % (cellSize + 1));
+
     let paintColor,
       noiseX = 0,
       noiseY = 0,
       noiseZ = p.frameCount * noiseIncrement;
+
     for (let y: number = 0; y < PARAMS.height; y += cellSize) {
       noiseX = 0;
       const dy = cxy - y;
       for (let x: number = 0; x < PARAMS.width; x += cellSize) {
         const noiseVal = p.noise(noiseX, noiseY, noiseZ);
-        const sineGoodies = 0.5 + 0.5 * Math.sin((2 * p.frameCount * Math.PI) / 180);
+        const sineGoodies =
+          0.5 +
+          0.5 *
+            Math.sin((2 * p.frameCount * Math.PI) / 180) *
+            Math.pow(Math.cos((4 * p.frameCount * Math.PI) / 180), 2);
         const noiseVal2 = p.noise(noiseX, noiseY, noiseZ + 87594);
 
         baseColor = p.color(sineGoodies * 360, 100, noiseVal2 * 100);
+        // baseColor = p.color(noiseVal2 * 360, 100, sineGoodies * 100);
         const dx = cxy - x;
         if (dx * dx + dy * dy > cxy * cxy) {
           paintColor = baseColor;
         } else {
-          paintColor = adjustBrightnessWithHueShift(baseColor, noiseVal - 0.5);
+          paintColor = adjustBrightnessWithHueShift(baseColor, (noiseVal - 0.5) * 1.5);
         }
 
         p.fill(paintColor);
