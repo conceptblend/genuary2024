@@ -8,7 +8,7 @@ const PARAM_SETS = [
     seed: "hello world",
     width: 540,
     height: 540,
-    fps: 30,
+    fps: 24,
     duration: 30 * 10, // no unit (frameCount by default; sometimes seconds or frames or whatever)
     exportVideo: false,
     isAnimated: true,
@@ -30,30 +30,20 @@ function clamp(x: number, min: number, max: number): number {
 
 export const sketch = (p: p5) => {
   let isRecording = false;
+  let baseColor;
 
-  function adjustBrightnessWithHueShift(c: p5.Color, brightnessShiftAmount: number, hueShiftAmount): p5.Color {
+  function adjustBrightnessWithHueShift(c: p5.Color, brightnessShiftAmount: number): p5.Color {
+    const YELLOW_HUE = 60,
+      PURPLE_HUE = 280;
     let hue: number = p.hue(c),
       saturation: number = p.saturation(c),
       brightness: number = p.brightness(c);
 
-    brightness = clamp(brightness + brightnessShiftAmount * 100, 0, 100);
+    hue = p.lerp(hue, brightnessShiftAmount > 0 ? YELLOW_HUE : PURPLE_HUE, 2 * brightnessShiftAmount);
+    brightness = clamp(brightness + brightnessShiftAmount * 80, 0, 100);
 
-    const adjustedColor = p.color(hue, saturation, brightness);
-    const hueTargetColor =
-      hueShiftAmount > 0.5 ? p.color(60, saturation, brightness) : p.color(280, saturation, brightness);
-
-    return p.lerpColor(adjustedColor, hueTargetColor, hueShiftAmount);
+    return p.color(hue, saturation, brightness);
   }
-
-  // function darkenWithHueShift(c: p5.Color, shiftAmount: number): p5.Color {
-  //   return adjustBrightnessWithHueShift(c, -Math.abs(shiftAmount), false);
-  // }
-  // function lightenWithHueShift(c: p5.Color, shiftAmount: number): p5.Color {
-  //   return adjustBrightnessWithHueShift(c, Math.abs(shiftAmount));
-  // }
-
-  let baseColor,
-    baseColorValues = [160, 80, 50];
 
   p.setup = () => {
     // SVG output is MUCH SLOWER but necessary for the SVG exports
@@ -74,34 +64,41 @@ export const sketch = (p: p5) => {
     if (!EXPORTVIDEO && !PARAMS.isAnimated) p.noLoop();
   };
 
+  let minNoise = Infinity,
+    maxNoise = -Infinity;
   p.draw = () => {
     p.background(0);
 
     // DO YOUR DRAWING HERE!
-    const gridSize = 54 * 2,
+    const gridSize = 54,
       cellSize = PARAMS.width / gridSize,
       noiseIncrement = 0.025;
-    let i = 0,
-      j = 0,
-      c,
+    const cxy = PARAMS.width * 0.5 - ((PARAMS.width * 0.5) % (cellSize + 1));
+    let paintColor,
       noiseX = 0,
       noiseY = 0,
       noiseZ = p.frameCount * noiseIncrement;
     for (let y: number = 0; y < PARAMS.height; y += cellSize) {
       noiseX = 0;
+      const dy = cxy - y;
       for (let x: number = 0; x < PARAMS.width; x += cellSize) {
         const noiseVal = p.noise(noiseX, noiseY, noiseZ);
+        const sineGoodies = 0.5 + 0.5 * Math.sin((2 * p.frameCount * Math.PI) / 180);
         const noiseVal2 = p.noise(noiseX, noiseY, noiseZ + 87594);
 
-        baseColor = p.color(noiseVal * 360, 100, 50);
-        c = adjustBrightnessWithHueShift(baseColor, noiseVal, noiseVal);
+        baseColor = p.color(sineGoodies * 360, 100, noiseVal2 * 100);
+        const dx = cxy - x;
+        if (dx * dx + dy * dy > cxy * cxy) {
+          paintColor = baseColor;
+        } else {
+          paintColor = adjustBrightnessWithHueShift(baseColor, noiseVal - 0.5);
+        }
 
-        p.fill(c);
+        p.fill(paintColor);
         p.rect(x, y, cellSize);
-        i++;
+
         noiseX += noiseIncrement;
       }
-      j++;
       noiseY += noiseIncrement;
     }
 
