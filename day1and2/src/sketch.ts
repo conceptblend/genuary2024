@@ -40,7 +40,7 @@ export const sketch = (p: p5) => {
       brightness: number = p.brightness(c);
 
     hue = p.lerp(hue, brightnessShiftAmount > 0 ? YELLOW_HUE : PURPLE_HUE, 2 * brightnessShiftAmount);
-    brightness = clamp(brightness + brightnessShiftAmount * 80, 0, 100);
+    brightness = clamp(brightness + brightnessShiftAmount * 100, 0, 100);
 
     return p.color(hue, saturation, brightness);
   }
@@ -92,11 +92,11 @@ export const sketch = (p: p5) => {
             Math.pow(Math.cos((4 * p.frameCount * Math.PI) / 180), 2);
         const noiseVal2 = p.noise(noiseX, noiseY, noiseZ + 87594);
 
-        baseColor = p.color(sineGoodies * 360, 100, noiseVal2 * 100);
+        baseColor = p.color(sineGoodies * 360, 30 + (1 - sineGoodies) * 70, 40 + noiseVal2 * 60);
         // baseColor = p.color(noiseVal2 * 360, 100, sineGoodies * 100);
         const dx = cxy - x;
         if (dx * dx + dy * dy > cxy * cxy) {
-          paintColor = baseColor;
+          paintColor = p.color(0, 0, 0); //baseColor;
         } else {
           paintColor = adjustBrightnessWithHueShift(baseColor, (noiseVal - 0.5) * 1.5);
         }
