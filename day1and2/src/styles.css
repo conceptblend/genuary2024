@@ -12,5 +12,5 @@ body {
 .p5Canvas, /* Adds support for the <div /> around SVG output */
 canvas {
   display: block !important;
-  margin: 1rem 0;
+  margin: 1rem auto;
 }
