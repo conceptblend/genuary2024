@@ -1,0 +1,45 @@
+{
+  "name": "p5sketch-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "yarn build:prep && yarn build:dist",
+    "dev": "yarn build:prep && yarn build:dev",
+    "build:svg": "yarn build:prep && yarn build:dist:svg",
+    "dev:svg": "yarn build:prep && yarn build:dev:svg",
+    "copy": "cp ./public/* ./dist",
+    "clean": "rm -rf ./dist/*",
+    "build:prep": "mkdir -p ./dist && yarn clean && yarn copy",
+    "build:dist": "esbuild ./src/index.js --bundle --minify --keep-names --sourcemap --outdir=./dist --target=es2020 --define:AS_SVG=false --define:RELOAD=false",
+    "build:dev": "esbuild ./src/index.js --bundle --sourcemap --outdir=./dist --watch --servedir=./dist --target=es2020 --define:AS_SVG=false --define:RELOAD=true",
+    "build:dist:svg": "esbuild ./src/index.js --bundle --minify --sourcemap --outdir=./dist --target=es2020 --define:AS_SVG=true --define:RELOAD=false",
+    "build:dev:svg": "esbuild ./src/index.js --bundle --sourcemap --outdir=./dist --watch --servedir=./dist --target=es2020  --define:RELOAD=true --define:AS_SVG=true",
+    "prepare": "npx crlf --set=LF node_modules/.bin/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conceptblend/p5sketch-template.git"
+  },
+  "keywords": [
+    "p5",
+    "p5js",
+    "processing",
+    "template"
+  ],
+  "author": "Andrew J Wright",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/conceptblend/p5sketch-template/issues"
+  },
+  "homepage": "https://github.com/conceptblend/p5sketch-template#readme",
+  "dependencies": {
+    "p5": "1.6.0",
+    "p5.js-svg": "1.4.0"
+  },
+  "devDependencies": {
+    "@types/p5": "1.6.0",
+    "esbuild": "0.19.5"
+  }
+}
