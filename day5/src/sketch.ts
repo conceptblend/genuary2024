@@ -11,7 +11,7 @@ const PARAM_SETS = [
     fps: 9,
     durationInFrames: 9 * 4 * 4, // no unit (frameCount by default; sometimes seconds or frames or whatever)
     isAnimated: true,
-    exportFrames: true,
+    exportFrames: !true,
     renderAsVector: AS_SVG,
   },
 ];
